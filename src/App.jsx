@@ -5,7 +5,7 @@ import {
   AiOutlineInstagram,
   AiFillYoutube,
 } from "react-icons/ai";
-import Membership from "./assets/img/membresia2.png";
+import Membership from "./assets/img/membresia.png";
 import FarmaLealLogo from "./assets/img/farmaleal-logo.png";
 import { ModalPayment } from "./ModalPayment";
 export const App = () => {

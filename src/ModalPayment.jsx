@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog, Transition, Menu } from "@headlessui/react";
 import creditCards from "./assets/img/cards1.png";
 import debitCards from "./assets/img/cards2.png";
 import openpayLogo from "./assets/img/openpay.png";
@@ -7,7 +7,7 @@ import encrypt from "./assets/img/security.png";
 import cardExample from "./assets/img/cvv.png";
 import { AppFormLabel } from "./presentation/Components/AppFormLabel";
 import { AppTextField } from "./presentation/Components/AppTextField";
-import { AppFormField } from "./presentation/Components/AppFormField";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 export const ModalPayment = ({ isVisible, onClose }) => {
   const [paymentData, setPaymentData] = useState({
     deviceSessionId: "",
@@ -20,6 +20,16 @@ export const ModalPayment = ({ isVisible, onClose }) => {
     expiration_month: "",
     cvv2: "",
   });
+  const [name, setName] = useState("");
+  const [paternalName, setPaternalName] = useState("");
+  const [maternalName, setMaternalName] = useState("");
+  const [line1, setLine1] = useState("");
+  const [number, setNumber] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [typeCard, setTypeCard] = useState("");
+  const [msi, setMSI] = useState("");
+
+  const [parent, enableAnimations] = useAutoAnimate();
 
   useEffect(() => {
     /*global OpenPay*/
@@ -92,8 +102,8 @@ export const ModalPayment = ({ isVisible, onClose }) => {
                       <div className="col-span-12 font-medium text-lg">
                         Datos de tarjeta
                       </div>
-                      <div className="col-span-4 w-full  flex flex-col gap-2 justify-center items-start">
-                        <AppFormLabel label="Nombre del titular" />
+                      <div className="col-span-3 w-full  flex flex-col gap-2 justify-center items-start">
+                        <AppFormLabel label="Nombre del titular:" />
                         <AppTextField
                           dataOpenCard="holder_name"
                           name="holder_name"
@@ -103,59 +113,77 @@ export const ModalPayment = ({ isVisible, onClose }) => {
                           className="w-full"
                         />
                       </div>
-                      <div className="w-full col-span-4 flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+                      <div className="w-full col-span-3 flex flex-col gap-2 justify-center items-start text-lg font-extralight">
                         <AppFormLabel label="Número de Tarjeta:" />
-                        <AppTextField />
-                        <input
-                          type="text"
-                          autoComplete="off"
+                        <AppTextField
                           name="card_number"
                           value={card_number}
                           onChange={handleChange}
-                          className="w-full h-8 rounded-md border border-slate-300 p-2 "
+                          className="w-full"
                         />
                       </div>
-                      <div className="w-full col-span-4 flex flex-col gap-2 justify-center items-start text-lg font-extralight">
-                        <label className="text-base font-normal">
-                          Fecha de expiración
-                        </label>
+                      <div className="w-full col-span-3 flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+                        <AppFormLabel label="Fecha de expiración:" />
                         <div className="flex flex-row gap-3 ">
-                          <input
-                            type="text"
+                          <AppTextField
                             placeholder="Mes"
                             name="expiration_month"
                             value={expiration_month}
                             onChange={handleChange}
-                            className="w-full h-8 rounded-md border border-slate-300 p-2 "
+                            className="w-full"
                           />
-                          <input
-                            type="text"
+                          <AppTextField
                             placeholder="Año"
                             name="expiration_year"
                             value={expiration_year}
                             onChange={handleChange}
-                            className="w-full h-8 rounded-md border border-slate-300 p-2 "
+                            className="w-full"
                           />
                         </div>
                       </div>
-                      <div className="w-full col-span-4 flex flex-col gap-2 justify-center items-start text-lg font-extralight">
-                        <label className="text-base font-normal">
-                          Código de seguridad
-                        </label>
+                      <div className="w-full col-span-3 flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+                        <AppFormLabel label="Código de seguridad:" />
                         <div className="flex flex-row items-center gap-2">
-                          <input
-                            type="text"
+                          <AppTextField
                             placeholder="3 dígitos"
-                            autoComplete="off"
                             value={cvv2}
                             name="cvv2"
                             onChange={handleChange}
-                            className="w-1/2 h-8 rounded-md border border-slate-300 p-2 "
+                            className="w-1/2 "
                           />
                           <div className="full">
                             <img src={cardExample} />
                           </div>
                         </div>
+                      </div>
+                      <div className="w-full col-span-2 flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+                        <AppFormLabel label="Tipo de Tarjeta" />
+                        <select
+                          value={typeCard}
+                          onChange={(e) => setTypeCard(e.target.value)}
+                        >
+                          <option value="1">Tarjeta de Débito</option>
+                          <option value="2">Tarjeta de Crédito</option>
+                        </select>
+                      </div>
+                      <div
+                        ref={parent}
+                        className="w-full col-span-2 flex flex-col gap-2 justify-center items-start text-lg font-extralight"
+                      >
+                        {typeCard.toString() === "2" && (
+                          <>
+                            <AppFormLabel label="Meses sin Intereses" />
+                            <select
+                              value={msi}
+                              onChange={(e) => setMSI(e.target.value)}
+                            >
+                              <option value="3">3 Meses sin Intereses</option>
+                              <option value="6">6 Meses sin Intereses</option>
+                              <option value="9">9 Meses sin Intereses</option>
+                              <option value="12">12 Meses sin Intereses</option>
+                            </select>
+                          </>
+                        )}
                       </div>
                     </div>
                     <hr />
@@ -163,84 +191,63 @@ export const ModalPayment = ({ isVisible, onClose }) => {
                       <div className="col-span-12 font-medium text-lg">
                         Datos del Cliente
                       </div>
-                      <div className="w-full col-span-4  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
-                        <label className="text-base font-normal">
-                          Nombre(s)
-                        </label>
-                        <input
-                          type="text"
-                          placeholder=""
-                          autoComplete="off"
-                          value={cvv2}
+                      <div className="w-full col-span-2  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+                        <AppFormLabel label="Nombre(s):" />
+                        <AppTextField
+                          value={name}
                           name="name"
-                          onChange={handleChange}
-                          className="w-full h-8 rounded-md border border-slate-300 p-2 "
+                          onChange={(e) => setName(e.target.value)}
+                          className="w-full"
                         />
                       </div>
-                      <div className="w-full col-span-4  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
-                        <label className="text-base font-normal">
-                          Apellido Paterno
-                        </label>
-                        <input
-                          type="text"
+                      <div className="w-full col-span-2  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+                        <AppFormLabel label="Apellido Paterno:" />
+                        <AppTextField
                           placeholder=""
-                          autoComplete="off"
-                          value={cvv2}
+                          value={paternalName}
                           name="paterno"
-                          onChange={handleChange}
-                          className="w-full h-8 rounded-md border border-slate-300 p-2 "
+                          onChange={(e) => setPaternalName(e.target.value)}
+                          className="w-full"
                         />
                       </div>
-                      <div className="w-full col-span-4  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
-                        <label className="text-base font-normal">
-                          Apellido Materno
-                        </label>
-                        <input
-                          type="text"
+                      <div className="w-full col-span-2  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+                        <AppFormLabel label="Apellido Materno:" />
+                        <AppTextField
                           placeholder=""
-                          autoComplete="off"
-                          value={cvv2}
+                          value={maternalName}
                           name="materno"
-                          onChange={handleChange}
-                          className="w-full h-8 rounded-md border border-slate-300 p-2 "
+                          onChange={(e) => setMaternalName(e.target.value)}
+                          className="w-full"
                         />
                       </div>
-                      <div className="w-full col-span-6  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
-                        <label className="text-base font-normal">Calle</label>
-                        <input
-                          type="text"
+                      <div className="w-full col-span-2  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+                        <AppFormLabel label="Calle:" />
+                        <AppTextField
                           placeholder=""
-                          autoComplete="off"
-                          value={cvv2}
+                          value={line1}
                           name="line1"
-                          onChange={handleChange}
-                          className="w-full h-8 rounded-md border border-slate-300 p-2 "
+                          onChange={(e) => setLine1(e.target.value)}
+                          className="w-full"
                         />
                       </div>
-                      <div className="w-full col-span-3  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
-                        <label className="text-base font-normal">Numero</label>
-                        <input
-                          type="text"
+                      <div className="w-full col-span-2  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+                        <AppFormLabel label="Número:" />
+                        <AppTextField
                           placeholder=""
-                          autoComplete="off"
-                          value={cvv2}
+                          value={number}
                           name="number"
-                          onChange={handleChange}
-                          className="w-full h-8 rounded-md border border-slate-300 p-2 "
+                          onChange={(e) => setNumber(e.target.value)}
+                          className="w-full"
                         />
                       </div>
-                      <div className="w-full col-span-3  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
-                        <label className="text-base font-normal">
-                          Código Postal
-                        </label>
-                        <input
-                          type="text"
-                          placeholder=""
-                          autoComplete="off"
-                          value={cvv2}
+                      <div className="w-full col-span-2  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+                        <AppFormLabel label="Código Postal:" />
+                        <AppTextField
+                          placeholder="5 dígitos"
+                          value={postalCode}
                           name="postalCode"
-                          onChange={handleChange}
-                          className="w-full h-8 rounded-md border border-slate-300 p-2 "
+                          onChange={(e) => setPostalCode(e.target.value)}
+                          className="w-full"
                         />
                       </div>
                     </div>
