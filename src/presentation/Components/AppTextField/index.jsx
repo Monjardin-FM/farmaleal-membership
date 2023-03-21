@@ -8,10 +8,14 @@ export const AppTextField = ({
   onChange,
   value,
   className,
+  disabled = false,
+  type = "text",
 }) => {
   return (
     <input
-      type="text"
+      disabled={disabled}
+      min={0}
+      type={type}
       placeholder={placeholder}
       autoComplete="off"
       data-openpay-card={dataOpenCard}

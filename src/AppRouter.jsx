@@ -6,6 +6,7 @@ import { Verification } from "./Verification";
 export const AppRouter = () => {
   return (
     <Routes>
+      <Route path="/" element={<App />} />
       <Route path="/membresiaClubFarmaleal" element={<App />} />
       <Route path="/verificationMembership/" element={<Verification />} />
     </Routes>

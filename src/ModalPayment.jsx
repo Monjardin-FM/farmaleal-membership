@@ -250,6 +250,54 @@ export const ModalPayment = ({ isVisible, onClose }) => {
                           className="w-full"
                         />
                       </div>
+                      <div className="w-full col-span-2  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+                        <AppFormLabel label="Estado:" />
+                        <AppTextField
+                          value={postalCode}
+                          name="postalCode"
+                          onChange={(e) => setPostalCode(e.target.value)}
+                          className="w-full"
+                        />
+                      </div>
+                      <div className="w-full col-span-2  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+                        <AppFormLabel label="Ciudad:" />
+                        <AppTextField
+                          value={postalCode}
+                          name="postalCode"
+                          onChange={(e) => setPostalCode(e.target.value)}
+                          className="w-full"
+                        />
+                      </div>
+                      <div className="w-full col-span-2  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+                        <AppFormLabel label="Correo Electrónico:" />
+                        <AppTextField
+                          value={postalCode}
+                          name="postalCode"
+                          onChange={(e) => setPostalCode(e.target.value)}
+                          className="w-full"
+                          type="email"
+                        />
+                      </div>
+                      <div className="w-full col-span-1  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+                        <AppFormLabel label="Edad:" />
+                        <AppTextField
+                          type="number"
+                          value={postalCode}
+                          name="postalCode"
+                          onChange={(e) => setPostalCode(e.target.value)}
+                          className="w-full"
+                        />
+                      </div>
+                      <div className="w-full col-span-1  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+                        <AppFormLabel label="Sexo:" />
+                        <select
+                          value={msi}
+                          onChange={(e) => setMSI(e.target.value)}
+                        >
+                          <option value="M">Masculino</option>
+                          <option value="F">Femenino</option>
+                        </select>
+                      </div>
                     </div>
                     <div className="flex flex-row   justify-start text-cyan-800 font-semibold divide-x-2 h-20 ">
                       <div className="grid grid-cols-2 items-start">
