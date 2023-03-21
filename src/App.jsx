@@ -1,14 +1,9 @@
 import React, { useState } from "react";
-import {
-  AiOutlineTwitter,
-  AiFillFacebook,
-  AiOutlineInstagram,
-  AiFillYoutube,
-} from "react-icons/ai";
+
 import Membership from "./assets/img/membresia.png";
-import FarmaLealLogo from "./assets/img/farmaleal-logo.png";
 import { ModalPayment } from "./ModalPayment";
 import { Navbar } from "./navbar";
+import { Menu } from "./Menu";
 export const App = () => {
   const [showModalMembership, setShowModalMembership] = useState(false);
   return (
@@ -19,14 +14,8 @@ export const App = () => {
       />
       <div className="flex flex-col justify-center items-center gap-7 mb-5 overflow-hidden">
         <Navbar />
-        <div className="w-full px-36 flex flex-row gap-10 items-center font-extralight text-lg">
-          <div className="w-20">
-            <img src={FarmaLealLogo} />
-          </div>
-          <div>
-            <a href="https://www.farmaleal.com.mx/">Inicio</a>
-          </div>
-        </div>
+        <Menu />
+
         <hr className="w-full" />
         <h1 className="font-normal text-5xl text-sky-900">
           MEMBRESÍA CLUB FARMALEAL
