@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Membership from "./assets/img/membresia.png";
 import { ModalPayment } from "./ModalPayment";
@@ -6,6 +6,7 @@ import { Navbar } from "./navbar";
 import { Menu } from "./Menu";
 export const App = () => {
   const [showModalMembership, setShowModalMembership] = useState(false);
+
   return (
     <>
       <ModalPayment

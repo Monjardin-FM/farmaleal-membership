@@ -9,6 +9,10 @@ import { AppFormLabel } from "./presentation/Components/AppFormLabel";
 import { AppTextField } from "./presentation/Components/AppTextField";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { createMembership } from "./services/createMembership";
+import { getEstados } from "./services/getEstados";
+import { getCity } from "./services/getCity";
+import { ApiKeyOpenPay, idOpenPay } from "../variables";
+
 export const FormPayment = () => {
   const [paymentData, setPaymentData] = useState({
     deviceSessionId: "",
@@ -21,11 +25,23 @@ export const FormPayment = () => {
     expiration_month: "",
     cvv2: "",
   });
-
+  const [estados, setEstados] = useState([
+    {
+      idEstado: 0,
+      descripcion: "",
+    },
+  ]);
+  const [municipios, setMunicipios] = useState([
+    {
+      idMunicipio: 0,
+      descripcion: "",
+    },
+  ]);
   const [typeCard, setTypeCard] = useState("");
-
+  const [tokenId, setTokenId] = useState("");
   const [parent] = useAutoAnimate();
-  const [tokenPayment, setTokenPayment] = useState("");
+  const [idEstadoState, setIdEstadoState] = useState(33);
+  const [idMunicipioState, setIdMunicipioState] = useState(0);
   const [information, setInformation] = useState({
     cargo: {
       name: "",
@@ -33,8 +49,8 @@ export const FormPayment = () => {
       email: "",
       city: "",
       state: "",
-      idCiudad: "",
-      idEstado: "",
+      idCiudad: idMunicipioState,
+      idEstado: idEstadoState,
       postalCode: "",
       line1: "",
       cardNumber: "",
@@ -52,12 +68,12 @@ export const FormPayment = () => {
       edad: "",
       sexo: "",
     },
-    sessionId: "",
+    sessionId: paymentData.tokenId,
   });
   useEffect(() => {
     /*global OpenPay*/
-    OpenPay.setId("mwi8r0qlo64qxpyn19rq");
-    OpenPay.setApiKey("pk_704ad956055340ad9c9dd529f62d6f4d");
+    OpenPay.setId(idOpenPay);
+    OpenPay.setApiKey(ApiKeyOpenPay);
     OpenPay.setSandboxMode(true);
     //Se genera el id de dispositivo
     setPaymentData({
@@ -65,7 +81,6 @@ export const FormPayment = () => {
       deviceSessionId: OpenPay.deviceData.setup(),
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    console.log(process);
   }, []);
 
   const { card_number, cvv2, expiration_month, expiration_year, holder_name } =
@@ -86,14 +101,79 @@ export const FormPayment = () => {
     OpenPay.token.create(cardForm, sucessCallbak, console.log);
   };
 
-  const sucessCallbak = (response) => {
+  function sucessCallbak(response) {
     setPaymentData({
       ...paymentData,
       tokenId: response.data.id,
     });
-    setTokenPayment(response.data.id);
-  };
+    setTokenId(response.data.id);
+  }
 
+  const [stateName, setStateName] = useState("");
+  const [municipioName, setMunicipioName] = useState("");
+  useEffect(() => {
+    console.log(information);
+  }, [information]);
+  useEffect(() => {
+    const esta = getEstados();
+    esta.then((response) => setEstados(response));
+  }, []);
+  useEffect(() => {
+    const muni = getCity(idEstadoState);
+    muni.then((response) => setMunicipios(response));
+  }, [idEstadoState]);
+
+  useEffect(() => {
+    const s = estados.filter((element) => element.idEstado === idEstadoState);
+    if (s.length > 0) {
+      setStateName(s[0].descripcion);
+      console.log(s[0].descripcion);
+    }
+    if (municipios.length > 0) {
+      const m = municipios.filter(
+        (element) => element.idMunicipio === idMunicipioState
+      );
+      if (m.length > 0) {
+        setMunicipioName(m[0].descripcion);
+      }
+    }
+  }, [idEstadoState, idMunicipioState]);
+  useEffect(() => {
+    setTokenId(tokenId);
+    console.log(tokenId);
+  }, [tokenId]);
+  const handleSubmit = async (values) => {
+    // handleData(values);
+    const respuesta = await createMembership({
+      cargo: {
+        name: values.nombre,
+        lastName: values.paterno,
+        email: values.correo,
+        city: municipioName,
+        state: stateName,
+        idCiudad: idMunicipioState.toString(),
+        idEstado: idEstadoState.toString(),
+        postalCode: values.postalCode,
+        line1: values.line1,
+        cardNumber: cardForm.card_number,
+        holderName: cardForm.holder_name,
+        expirationMonth: cardForm.expiration_month,
+        expirationYear: cardForm.expiration_year,
+        cvv2: cardForm.cvv2,
+        mesesSI: values.mesesSI,
+      },
+      persona: {
+        correo: values.correo,
+        nombre: values.nombre,
+        paterno: values.paterno,
+        materno: values.materno,
+        edad: values.edad.toString,
+        sexo: values.sexo,
+      },
+      sessionId: paymentData.tokenId,
+    });
+    console.log(respuesta);
+  };
   return (
     <Formik
       initialValues={{
@@ -107,39 +187,13 @@ export const FormPayment = () => {
         state: "",
         postalCode: "",
         line1: "",
-        mesesSI: "",
+        mesesSI: 0,
       }}
       onSubmit={async (values) => {
-        await handlePayment();
-
-        await setInformation({
-          cargo: {
-            name: values.nombre,
-            lastName: values.paterno,
-            email: values.correo,
-            city: values.city,
-            state: values.state,
-            postalCode: values.postalCode,
-            line1: values.line1,
-            cardNumber: cardForm.card_number,
-            holderName: cardForm.holder_name,
-            expirationMonth: cardForm.expiration_month,
-            expirationYear: cardForm.expiration_year,
-            cvv2: cardForm.cvv2,
-            mesesSI: values.mesesSI,
-          },
-          persona: {
-            correo: values.correo,
-            nombre: values.nombre,
-            paterno: values.paterno,
-            materno: values.materno,
-            edad: values.edad,
-            sexo: values.sexo,
-          },
-          sessionId: tokenPayment,
-        });
-        const respuesta = await createMembership(information);
-        console.log(respuesta);
+        handlePayment();
+        await setTimeout(function () {
+          handleSubmit(values);
+        }, 1500);
       }}
     >
       {(props) => (
@@ -154,6 +208,7 @@ export const FormPayment = () => {
               <div className="col-span-12 font-medium text-lg">
                 Datos de tarjeta
               </div>
+              <div>{tokenId}</div>
               <div className="col-span-3 w-full  flex flex-col gap-2 justify-center items-start">
                 <AppFormLabel label="Nombre del titular:" />
                 <AppTextField
@@ -296,21 +351,39 @@ export const FormPayment = () => {
               </div>
               <div className="w-full col-span-2  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
                 <AppFormLabel label="Estado:" />
-                <AppTextField
+                <select
                   value={props.values.state}
+                  onChange={(ev) => {
+                    props.handleChange(ev);
+                    setIdEstadoState(parseInt(ev.target.value));
+                  }}
                   name="state"
-                  onChange={props.handleChange}
-                  className="w-full"
-                />
+                >
+                  <option>Estado</option>
+                  {estados.map((item) => (
+                    <option key={item.idEstado} value={item.idEstado}>
+                      {item.descripcion}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <div className="w-full col-span-2  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+              <div className="w-full col-span-3  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
                 <AppFormLabel label="Ciudad:" />
-                <AppTextField
+                <select
                   value={props.values.city}
+                  onChange={(ev) => {
+                    props.handleChange(ev);
+                    setIdMunicipioState(parseInt(ev.target.value));
+                  }}
                   name="city"
-                  onChange={props.handleChange}
-                  className="w-full"
-                />
+                >
+                  <option>Ciudad</option>
+                  {municipios.map((item) => (
+                    <option key={item.idMunicipio} value={item.idMunicipio}>
+                      {item.descripcion}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="w-full col-span-2  flex flex-col gap-2 justify-center items-start text-lg font-extralight">
                 <AppFormLabel label="Correo Electrónico:" />
@@ -385,7 +458,6 @@ export const FormPayment = () => {
                 type="submit"
                 className="bg-sky-900 text-white px-10 py-3 hover:bg-sky-800 transition duration-200"
                 id="pay-button"
-                // onClick={handlePayment}
               >
                 Pagar
               </button>
