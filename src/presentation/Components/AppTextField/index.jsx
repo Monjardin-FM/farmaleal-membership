@@ -10,9 +10,11 @@ export const AppTextField = ({
   className,
   disabled = false,
   type = "text",
+  onBlur,
 }) => {
   return (
     <input
+      onBlur={onBlur}
       disabled={disabled}
       min={0}
       type={type}
