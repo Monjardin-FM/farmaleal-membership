@@ -9,18 +9,7 @@ import { getEstados } from "./services/getEstados";
 import { getCity } from "./services/getCity";
 import * as Yup from "yup";
 import { FooterModal } from "./FooterModal";
-export const FormPayment = () => {
-  const [paymentData, setPaymentData] = useState({
-    deviceSessionId: "",
-    tokenId: "",
-  });
-  const [cardForm, setCardForm] = useState({
-    card_number: "",
-    holder_name: "",
-    expiration_year: "",
-    expiration_month: "",
-    cvv2: "",
-  });
+export const FormPayment = ({ typeCard, cardForm, tokenID }) => {
   const [estados, setEstados] = useState([
     {
       idEstado: 0,
@@ -33,14 +22,12 @@ export const FormPayment = () => {
       descripcion: "",
     },
   ]);
-  const [typeCard, setTypeCard] = useState("");
-  const [tokenId, setTokenId] = useState("");
+  // const [typeCard, setTypeCard] = useState("");
   const [parent] = useAutoAnimate();
   const [idEstadoState, setIdEstadoState] = useState(33);
   const [idMunicipioState, setIdMunicipioState] = useState(0);
   const [stateName, setStateName] = useState("");
   const [municipioName, setMunicipioName] = useState("");
-  const [flagCardNumberValid, setFlagCardNumber] = useState(false);
 
   const formSchema = Yup.object().shape({
     mesesSI: Yup.string()
@@ -122,16 +109,14 @@ export const FormPayment = () => {
         edad: values.edad.toString,
         sexo: values.sexo,
       },
-      sessionId: tokenId,
+      sessionId: tokenID,
     });
-    console.log(respuesta);
+    console.log(respuesta.toString());
   };
 
   return (
     <Formik
       initialValues={{
-        holder_name: "",
-        card_number: "",
         nombre: "",
         correo: "",
         paterno: "",
@@ -145,12 +130,7 @@ export const FormPayment = () => {
         mesesSI: "0",
       }}
       validationSchema={formSchema}
-      onSubmit={
-        console.log("")
-        // handleSubmit(values);
-
-        // handleSubmit(values);
-      }
+      onSubmit={(values) => handleSubmit(values)}
     >
       {(props) => (
         <form
@@ -393,6 +373,34 @@ export const FormPayment = () => {
                   </div>
                 )}
               </div>
+              {typeCard.toString() === "credit" && (
+                <div
+                  ref={parent}
+                  className="w-full col-span-2 flex flex-col gap-2 justify-center items-start text-lg font-extralight"
+                >
+                  <AppFormLabel label="Meses sin Intereses" />
+                  <select
+                    value={props.values.mesesSI}
+                    onChange={props.handleChange}
+                    name="mesesSI"
+                    onBlur={props.handleBlur}
+                  >
+                    <option value="">Escoge una opción</option>
+                    <option value="0">Una sola exhibición</option>
+                    <option value="3">3 Meses sin Intereses</option>
+                    <option value="6">6 Meses sin Intereses</option>
+                    <option value="9">9 Meses sin Intereses</option>
+                    <option value="12">12 Meses sin Intereses</option>
+                  </select>
+                  {props.errors.mesesSI && props.touched.mesesSI && (
+                    <div className="border border-red-800 rounded-md bg w-full p-1 relative -top-2 bg-red-50">
+                      <span className="text-red-700 font-semibold text-sm">
+                        {props.errors.mesesSI}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             <FooterModal />
             <hr />
@@ -401,7 +409,6 @@ export const FormPayment = () => {
                 type="submit"
                 className="bg-sky-900 text-white px-10 py-3 hover:bg-sky-800 transition duration-200"
                 id="pay-button"
-                // onClick={handleSubmit}
               >
                 Pagar
               </button>

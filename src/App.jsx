@@ -10,6 +10,15 @@ export const App = () => {
   const [showModalMembership, setShowModalMembership] = useState(false);
   const [showModalVerificationCard, setShowModalVerificationCard] =
     useState(false);
+  const [tokenID, setTokenID] = useState("");
+  const [typeCard, setTypeCard] = useState("");
+  const [cardForm, setCardForm] = useState({
+    card_number: "",
+    holder_name: "",
+    expiration_year: "",
+    expiration_month: "",
+    cvv2: "",
+  });
   const nextForm = () => {
     setShowModalVerificationCard(false);
     setShowModalMembership(true);
@@ -19,11 +28,18 @@ export const App = () => {
       <ModalPayment
         isVisible={showModalMembership}
         onClose={() => setShowModalMembership(false)}
+        tokenID={tokenID}
+        typeCard={typeCard}
+        cardForm={cardForm}
       />
       <ModalVerificationCard
         isVisible={showModalVerificationCard}
         onClose={() => setShowModalVerificationCard(false)}
         nextForm={nextForm}
+        setTokenID={setTokenID}
+        setTypeCard={setTypeCard}
+        cardForm={cardForm}
+        setCardForm={setCardForm}
       />
 
       <div className="flex flex-col justify-center items-center gap-7 mb-5 overflow-hidden">

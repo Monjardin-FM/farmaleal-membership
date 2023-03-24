@@ -5,6 +5,8 @@ import { AppTextField } from "./presentation/Components/AppTextField";
 import { Navbar } from "./navbar";
 import { Menu } from "./Menu";
 import Swal from "sweetalert2";
+// import { useConfirmMembership } from "./hooks/use-confirm-membership";
+import { confirmMembership } from "./services/confirmMembership";
 
 export const Verification = () => {
   const [searchParams] = useSearchParams();
@@ -12,15 +14,43 @@ export const Verification = () => {
   const [password, setPassword] = useState("");
   const [verificationPassword, setVerificationPassword] = useState("");
   const [validatePassword, setValidatePassword] = useState(false);
-  const handleClick = () => {
-    Swal.fire({
-      title: "Cuenta creada con éxito",
-      text: "Ya puedes disfrutar de los beneficios de tu membresia de Club FarmaLeal",
-      icon: "success",
-      confirmButtonText: "Ok",
-      confirmButtonColor: "#15A186",
+  // const { confirmMember, loading, error } = useConfirmMembership();
+  const handleClick = async () => {
+    const flag = await confirmMembership({
+      email: email,
+      password: password,
     });
+    console.log(flag);
+    if (flag) {
+      Swal.fire({
+        title: "Cuenta creada con éxito",
+        text: "Ya puedes disfrutar de los beneficios de tu membresia de Club FarmaLeal",
+        icon: "success",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "#15A186",
+      });
+    }
+    // if (!flag) {
+    //   Swal.fire({
+    //     title: "Error al crear la cuenta",
+    //     text: "Vuelve a intentarlo",
+    //     icon: "error",
+    //     confirmButtonText: "Ok",
+    //     confirmButtonColor: "#15A186",
+    //   });
+    // }
   };
+  // useEffect(() => {
+  //   if (error) {
+  //     Swal.fire({
+  //       title: "Error al crear la cuenta",
+  //       text: "Vuelve a intentarlo",
+  //       icon: "error",
+  //       confirmButtonText: "Ok",
+  //       confirmButtonColor: "#15A186",
+  //     });
+  //   }
+  // });
   useEffect(() => {
     if (verificationPassword !== password) {
       setValidatePassword(true);
@@ -75,7 +105,10 @@ export const Verification = () => {
         <div className="col-span-1 col-start-3">
           <button
             className="w-full bg-sky-900 p-3 text-white hover:bg-sky-800 transition duration-200 disabled:cursor-not-allowed"
-            disabled={!!validatePassword || verificationPassword.length === 0}
+            disabled={
+              !!validatePassword || verificationPassword.length === 0
+              // || loading
+            }
             onClick={handleClick}
           >
             Enviar

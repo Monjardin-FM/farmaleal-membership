@@ -2,7 +2,13 @@ import React, { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { FormPayment } from "./FormPayment";
 
-export const ModalPayment = ({ isVisible, onClose }) => {
+export const ModalPayment = ({
+  isVisible,
+  onClose,
+  cardForm,
+  tokenID,
+  typeCard,
+}) => {
   return (
     <Transition appear show={isVisible} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose}>
@@ -30,7 +36,19 @@ export const ModalPayment = ({ isVisible, onClose }) => {
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="w-full max-w-7xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                <FormPayment />
+                <div>{tokenID}</div>
+                <div>{typeCard}</div>
+                <div>{cardForm.card_number}</div>
+                <div>{cardForm.cvv2}</div>
+                <div>{cardForm.expiration_month}</div>
+                <div>{cardForm.expiration_year}</div>
+                <div>{cardForm.holder_name}</div>
+
+                <FormPayment
+                  typeCard={typeCard}
+                  cardForm={cardForm}
+                  tokenID={tokenID}
+                />
               </Dialog.Panel>
             </Transition.Child>
           </div>
