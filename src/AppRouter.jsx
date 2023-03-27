@@ -12,4 +12,3 @@ export const AppRouter = () => {
     </Routes>
   );
 };
-//http://localhost:5173/verificationMembership/?token=robertomonjardin@gmai

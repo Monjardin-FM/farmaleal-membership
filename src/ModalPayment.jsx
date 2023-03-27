@@ -36,14 +36,6 @@ export const ModalPayment = ({
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="w-full max-w-7xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                <div>{tokenID}</div>
-                <div>{typeCard}</div>
-                <div>{cardForm.card_number}</div>
-                <div>{cardForm.cvv2}</div>
-                <div>{cardForm.expiration_month}</div>
-                <div>{cardForm.expiration_year}</div>
-                <div>{cardForm.holder_name}</div>
-
                 <FormPayment
                   typeCard={typeCard}
                   cardForm={cardForm}

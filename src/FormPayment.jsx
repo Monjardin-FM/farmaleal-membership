@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Field, Formik } from "formik";
-
+import { Formik } from "formik";
 import { AppFormLabel } from "./presentation/Components/AppFormLabel";
 import { AppTextField } from "./presentation/Components/AppTextField";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
@@ -9,6 +8,7 @@ import { getEstados } from "./services/getEstados";
 import { getCity } from "./services/getCity";
 import * as Yup from "yup";
 import { FooterModal } from "./FooterModal";
+import Swal from "sweetalert2";
 export const FormPayment = ({ typeCard, cardForm, tokenID }) => {
   const [estados, setEstados] = useState([
     {
@@ -22,7 +22,6 @@ export const FormPayment = ({ typeCard, cardForm, tokenID }) => {
       descripcion: "",
     },
   ]);
-  // const [typeCard, setTypeCard] = useState("");
   const [parent] = useAutoAnimate();
   const [idEstadoState, setIdEstadoState] = useState(33);
   const [idMunicipioState, setIdMunicipioState] = useState(0);
@@ -69,7 +68,6 @@ export const FormPayment = ({ typeCard, cardForm, tokenID }) => {
     const s = estados.filter((element) => element.idEstado === idEstadoState);
     if (s.length > 0) {
       setStateName(s[0].descripcion);
-      console.log(s[0].descripcion);
     }
     if (municipios.length > 0) {
       const m = municipios.filter(
@@ -82,7 +80,6 @@ export const FormPayment = ({ typeCard, cardForm, tokenID }) => {
   }, [idEstadoState, idMunicipioState]);
 
   const handleSubmit = async (values) => {
-    console.log("Entrando handleSubmit");
     const respuesta = await createMembership({
       cargo: {
         name: values.nombre,
@@ -111,7 +108,25 @@ export const FormPayment = ({ typeCard, cardForm, tokenID }) => {
       },
       sessionId: tokenID,
     });
-    console.log(respuesta.toString());
+
+    if (respuesta.data.result) {
+      Swal.fire({
+        title: "Pago exitoso",
+        text: `Para finalizar tu suscripción revisa tu correo ${values.correo}`,
+        icon: "success",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "#15A186",
+      });
+    }
+    if (!respuesta.data.result) {
+      Swal.fire({
+        title: "Error al crear la cuenta",
+        text: `${respuesta.data.exceptionMessage}`,
+        icon: "error",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "#15A186",
+      });
+    }
   };
 
   return (
@@ -140,7 +155,6 @@ export const FormPayment = ({ typeCard, cardForm, tokenID }) => {
           onSubmit={props.handleSubmit}
         >
           <div className="pt-2">
-            <hr />
             <div className="gap-2 pt-2 grid grid-cols-12 mb-3">
               <div className="col-span-12 font-medium text-lg">
                 Datos del Cliente

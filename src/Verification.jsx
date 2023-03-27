@@ -5,7 +5,6 @@ import { AppTextField } from "./presentation/Components/AppTextField";
 import { Navbar } from "./navbar";
 import { Menu } from "./Menu";
 import Swal from "sweetalert2";
-// import { useConfirmMembership } from "./hooks/use-confirm-membership";
 import { confirmMembership } from "./services/confirmMembership";
 
 export const Verification = () => {
@@ -14,14 +13,12 @@ export const Verification = () => {
   const [password, setPassword] = useState("");
   const [verificationPassword, setVerificationPassword] = useState("");
   const [validatePassword, setValidatePassword] = useState(false);
-  // const { confirmMember, loading, error } = useConfirmMembership();
   const handleClick = async () => {
-    const flag = await confirmMembership({
+    const response = await confirmMembership({
       email: email,
       password: password,
     });
-    console.log(flag);
-    if (flag) {
+    if (response.data.result) {
       Swal.fire({
         title: "Cuenta creada con éxito",
         text: "Ya puedes disfrutar de los beneficios de tu membresia de Club FarmaLeal",
@@ -30,27 +27,17 @@ export const Verification = () => {
         confirmButtonColor: "#15A186",
       });
     }
-    // if (!flag) {
-    //   Swal.fire({
-    //     title: "Error al crear la cuenta",
-    //     text: "Vuelve a intentarlo",
-    //     icon: "error",
-    //     confirmButtonText: "Ok",
-    //     confirmButtonColor: "#15A186",
-    //   });
-    // }
+    if (!response.data.result) {
+      Swal.fire({
+        title: "Error al crear la cuenta",
+        text: `${response.data.exceptionMessage}`,
+        icon: "error",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "#15A186",
+      });
+    }
   };
-  // useEffect(() => {
-  //   if (error) {
-  //     Swal.fire({
-  //       title: "Error al crear la cuenta",
-  //       text: "Vuelve a intentarlo",
-  //       icon: "error",
-  //       confirmButtonText: "Ok",
-  //       confirmButtonColor: "#15A186",
-  //     });
-  //   }
-  // });
+
   useEffect(() => {
     if (verificationPassword !== password) {
       setValidatePassword(true);

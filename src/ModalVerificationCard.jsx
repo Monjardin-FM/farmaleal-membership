@@ -3,7 +3,6 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Formik } from "formik";
 import { AppTextField } from "./presentation/Components/AppTextField";
 import { AppFormLabel } from "./presentation/Components/AppFormLabel";
-import { ApiKeyOpenPay, idOpenPay } from "../variables";
 import cardExample from "./assets/img/cvv.png";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import Swal from "sweetalert2";
@@ -37,8 +36,8 @@ export const ModalVerificationCard = ({
   };
   useEffect(() => {
     /*global OpenPay*/
-    OpenPay.setId(idOpenPay);
-    OpenPay.setApiKey(ApiKeyOpenPay);
+    OpenPay.setId(import.meta.env.VITE_API_KEY_OPENPAY_ID);
+    OpenPay.setApiKey(import.meta.env.VITE_API_KEY_OPENPAY);
     OpenPay.setSandboxMode(true);
     //Se genera el id de dispositivo
     setPaymentData({
@@ -57,7 +56,7 @@ export const ModalVerificationCard = ({
   };
 
   const createToken = () => {
-    OpenPay.token.create(cardForm, sucessCallbak, console.log);
+    OpenPay.token.create(cardForm, sucessCallbak, errorCallBack);
   };
 
   const sucessCallbak = (response) => {
@@ -73,10 +72,19 @@ export const ModalVerificationCard = ({
       icon: "success",
       title: "Tarjeta Válida. Rellena los siguiente campos",
       showConfirmButton: false,
-      timer: 1500,
+      timer: 2000,
     });
     nextForm();
   };
+
+  const errorCallBack = (response) => {
+    Swal.fire({
+      icon: "error",
+      title: `${response.data.description}`,
+      showConfirmButton: true,
+    });
+  };
+
   useEffect(() => {
     if (card_number.length >= 14) {
       const flagCardNumber = OpenPay.card.validateCardNumber(card_number);
@@ -173,14 +181,13 @@ export const ModalVerificationCard = ({
                               className="w-full"
                               onBlur={props.handleBlur}
                             />
-                            {!flagCardNumberValid &&
-                              props.touched.card_number && (
-                                <div className="border border-red-800 rounded-md bg w-full p-1 relative -top-2 bg-red-50">
-                                  <span className="text-red-700 font-semibold text-sm">
-                                    {"Tarjeta Inválida"}
-                                  </span>
-                                </div>
-                              )}
+                            {!flagCardNumberValid && (
+                              <div className="border border-red-800 rounded-md bg w-full p-1 relative -top-2 bg-red-50">
+                                <span className="text-red-700 font-semibold text-sm">
+                                  {"Tarjeta Inválida"}
+                                </span>
+                              </div>
+                            )}
                           </div>
                           <div className="w-full col-span-3 flex flex-col gap-2 justify-center items-start text-lg font-extralight">
                             <AppFormLabel label="Fecha de expiración:" />

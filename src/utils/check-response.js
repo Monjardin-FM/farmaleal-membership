@@ -5,7 +5,8 @@ export const verifyResponse = async ({ response }) => {
   const body = await response.json();
   const SUCCESS_CODE = 200;
   const isSuccess = body.statusCode === SUCCESS_CODE && body.isSuccess;
-  if (!isSuccess) throw new Error("The response was not successful");
+  // if (!isSuccess) throw new Error("The response was not successful");
+  // if (!isSuccess) console.log(body);
 
   return {
     body,

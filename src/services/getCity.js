@@ -1,11 +1,11 @@
-import { ApiKey } from "../../variables";
+// import { ApiKey } from "../../variables";
 import { api } from "../utils/api";
 import { verifyResponse } from "../utils/check-response";
 
 export const getCity = async (params) => {
   const response = await api().get("Catalogs/Municipio", {
     headers: {
-      ApiKey: ApiKey,
+      ApiKey: import.meta.env.VITE_API_KEY,
     },
     searchParams: {
       idEstado: params,

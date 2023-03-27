@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-
-import Membership from "./assets/img/membresia.png";
+import React, { useState } from "react";
 import { ModalPayment } from "./ModalPayment";
 import { Navbar } from "./navbar";
 import { Menu } from "./Menu";
 import { ModalVerificationCard } from "./ModalVerificationCard";
 import { MembershipInfo } from "./MembershipInfo";
+
 export const App = () => {
   const [showModalMembership, setShowModalMembership] = useState(false);
   const [showModalVerificationCard, setShowModalVerificationCard] =
@@ -23,6 +22,7 @@ export const App = () => {
     setShowModalVerificationCard(false);
     setShowModalMembership(true);
   };
+
   return (
     <>
       <ModalPayment
