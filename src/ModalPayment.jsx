@@ -40,6 +40,7 @@ export const ModalPayment = ({
                   typeCard={typeCard}
                   cardForm={cardForm}
                   tokenID={tokenID}
+                  onClose={onClose}
                 />
               </Dialog.Panel>
             </Transition.Child>

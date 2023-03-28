@@ -1,31 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import { AppFormLabel } from "./presentation/Components/AppFormLabel";
 import { AppTextField } from "./presentation/Components/AppTextField";
 import { Navbar } from "./navbar";
 import { Menu } from "./Menu";
 import Swal from "sweetalert2";
-import { confirmMembership } from "./services/confirmMembership";
-
+import { useConfirmMembership } from "./hooks/use-confirm-membership";
+import { Loader } from "./Loader";
 export const Verification = () => {
   const [searchParams] = useSearchParams();
   const email = searchParams.get("token");
   const [password, setPassword] = useState("");
   const [verificationPassword, setVerificationPassword] = useState("");
   const [validatePassword, setValidatePassword] = useState(false);
+  const { confirmMember, loading } = useConfirmMembership();
+
+  const confirmButton = () => {
+    return Swal.fire({
+      title: "Cuenta creada con éxito",
+      text: "Ya puedes disfrutar de los beneficios de tu membresia de Club FarmaLeal",
+      icon: "success",
+      confirmButtonText: "Ok",
+      confirmButtonColor: "#15A186",
+    });
+  };
+
   const handleClick = async () => {
-    const response = await confirmMembership({
+    const response = await confirmMember({
       email: email,
       password: password,
     });
     if (response.data.result) {
-      Swal.fire({
-        title: "Cuenta creada con éxito",
-        text: "Ya puedes disfrutar de los beneficios de tu membresia de Club FarmaLeal",
-        icon: "success",
-        confirmButtonText: "Ok",
-        confirmButtonColor: "#15A186",
-      });
+      const result = await confirmButton();
+      if (result.isConfirmed) {
+        window.location.href = "https://clubfarmaleal.myshopify.com/";
+      }
     }
     if (!response.data.result) {
       Swal.fire({
@@ -47,6 +56,7 @@ export const Verification = () => {
   }, [verificationPassword.length, password.length]);
   return (
     <div className=" flex flex-col items-center justify-center gap-3">
+      {loading ? <Loader text="Creando Cuenta" /> : ""}
       <Navbar />
       <Menu />
       <hr className="w-full" />
@@ -93,8 +103,7 @@ export const Verification = () => {
           <button
             className="w-full bg-sky-900 p-3 text-white hover:bg-sky-800 transition duration-200 disabled:cursor-not-allowed"
             disabled={
-              !!validatePassword || verificationPassword.length === 0
-              // || loading
+              !!validatePassword || verificationPassword.length === 0 || loading
             }
             onClick={handleClick}
           >

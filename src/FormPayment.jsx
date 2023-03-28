@@ -11,7 +11,7 @@ import { FooterModal } from "./FooterModal";
 import Swal from "sweetalert2";
 import { usePaymentMembership } from "./hooks/use-payment-membership";
 import { Loader } from "./Loader";
-export const FormPayment = ({ typeCard, cardForm, tokenID }) => {
+export const FormPayment = ({ typeCard, cardForm, tokenID, onClose }) => {
   const [estados, setEstados] = useState([
     {
       idEstado: 0,
@@ -51,7 +51,7 @@ export const FormPayment = ({ typeCard, cardForm, tokenID }) => {
       .required("Debes seleccionar una opción"),
     correo: Yup.string().email("Correo inválido").required("Campo Obligatorio"),
     edad: Yup.string()
-      .required("Campo Obligatorio")
+      .required("Obligatorio")
       .matches(/^\d+$/, "Edad inválida"),
     sexo: Yup.string()
       .min(1, "Debes seleccionar una opción")
@@ -82,7 +82,7 @@ export const FormPayment = ({ typeCard, cardForm, tokenID }) => {
     }
   }, [idEstadoState, idMunicipioState]);
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values, actions) => {
     const respuesta = await paymentMembership({
       cargo: {
         name: values.nombre,
@@ -120,6 +120,20 @@ export const FormPayment = ({ typeCard, cardForm, tokenID }) => {
         confirmButtonText: "Ok",
         confirmButtonColor: "#15A186",
       });
+      actions.resetForm({
+        nombre: "",
+        correo: "",
+        paterno: "",
+        materno: "",
+        edad: "",
+        sexo: "",
+        city: "",
+        state: "",
+        postalCode: "",
+        line1: "",
+        mesesSI: "0",
+      });
+      onClose();
     }
     if (!respuesta.data.result) {
       Swal.fire({
@@ -153,7 +167,7 @@ export const FormPayment = ({ typeCard, cardForm, tokenID }) => {
           mesesSI: "0",
         }}
         validationSchema={formSchema}
-        onSubmit={(values) => handleSubmit(values)}
+        onSubmit={(values, actions) => handleSubmit(values, actions)}
       >
         {(props) => (
           <form
@@ -231,7 +245,7 @@ export const FormPayment = ({ typeCard, cardForm, tokenID }) => {
                 </div>
                 <div
                   ref={parent}
-                  className="w-full col-span-2  flex flex-col gap-2 justify-center items-start text-lg font-extralight"
+                  className="w-full col-span-3  flex flex-col gap-2 justify-center items-start text-lg font-extralight"
                 >
                   <AppFormLabel label="Calle:" />
                   <AppTextField
@@ -353,7 +367,7 @@ export const FormPayment = ({ typeCard, cardForm, tokenID }) => {
                 </div>
                 <div
                   ref={parent}
-                  className="w-full col-span-2  flex flex-col gap-2 justify-center items-start text-lg font-extralight"
+                  className="w-full col-span-1  flex flex-col gap-2 justify-center items-start text-lg font-extralight"
                 >
                   <AppFormLabel label="Edad:" />
                   <AppTextField

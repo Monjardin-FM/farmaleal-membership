@@ -42,7 +42,7 @@ export const App = () => {
         setCardForm={setCardForm}
       />
 
-      <div className="flex flex-col justify-center items-center gap-7 mb-5 overflow-hidden">
+      <div className="flex flex-col justify-center items-center gap-3 mb-5 overflow-hidden">
         <Navbar />
         <Menu />
 

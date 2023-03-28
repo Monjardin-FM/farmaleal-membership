@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Formik } from "formik";
 import { AppTextField } from "./presentation/Components/AppTextField";
@@ -7,6 +7,7 @@ import cardExample from "./assets/img/cvv.png";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import Swal from "sweetalert2";
 import { FooterModal } from "./FooterModal";
+import * as Yup from "yup";
 
 export const ModalVerificationCard = ({
   isVisible,
@@ -20,6 +21,7 @@ export const ModalVerificationCard = ({
   const [flagCardNumberValid, setFlagCardNumber] = useState(false);
   const [parent] = useAutoAnimate();
   const [CVV2Flag, setCVV2Flag] = useState();
+  const [cardFormat, setCardFormat] = useState("");
   const [paymentData, setPaymentData] = useState({
     deviceSessionId: "",
     tokenId: "",
@@ -84,6 +86,23 @@ export const ModalVerificationCard = ({
       showConfirmButton: true,
     });
   };
+  const handleChangeCard = (e) => {
+    const cardValue = e.target.value
+      .replace(/\D/g, "")
+      .match(/(\d{0,4})(\d{0,4})(\d{0,4})(\d{0,4})/);
+    setCardFormat(
+      (e.target.value = !cardValue[2]
+        ? cardValue[1]
+        : `${cardValue[1]} ${cardValue[2]}${`${
+            cardValue[3] ? ` ${cardValue[3]}` : ""
+          }`}${`${cardValue[4] ? ` ${cardValue[4]}` : ""}`}`)
+    );
+    const numbers = e.target.value.replace(/(\D)/g, "");
+    setCardForm({
+      ...cardForm,
+      [e.target.name]: numbers,
+    });
+  };
 
   useEffect(() => {
     if (card_number.length >= 14) {
@@ -126,6 +145,7 @@ export const ModalVerificationCard = ({
                 <Formik
                   initialValues={{
                     mesesSI: "0",
+                    card_number: "",
                   }}
                   onSubmit={handleSubmit}
                 >
@@ -173,13 +193,13 @@ export const ModalVerificationCard = ({
                             <AppTextField
                               placeholder={"0000 0000 0000 0000"}
                               name="card_number"
-                              value={card_number}
+                              value={cardFormat}
                               onChange={(e) => {
                                 props.handleChange(e);
                                 handleChange(e);
+                                handleChangeCard(e);
                               }}
                               className="w-full"
-                              onBlur={props.handleBlur}
                             />
                             {!flagCardNumberValid && (
                               <div className="border border-red-800 rounded-md bg w-full p-1 relative -top-2 bg-red-50">
@@ -189,24 +209,35 @@ export const ModalVerificationCard = ({
                               </div>
                             )}
                           </div>
-                          <div className="w-full col-span-3 flex flex-col gap-2 justify-center items-start text-lg font-extralight">
+                          <div
+                            ref={parent}
+                            className="w-full col-span-3 flex flex-col gap-2 justify-center items-start text-lg font-extralight"
+                          >
                             <AppFormLabel label="Fecha de expiración:" />
                             <div className="flex flex-row gap-3 ">
                               <AppTextField
-                                placeholder="Mes"
+                                placeholder="MM"
                                 name="expiration_month"
                                 value={expiration_month}
                                 onChange={handleChange}
                                 className="w-full"
                               />
                               <AppTextField
-                                placeholder="Año"
+                                placeholder="YY"
                                 name="expiration_year"
                                 value={expiration_year}
                                 onChange={handleChange}
                                 className="w-full"
                               />
                             </div>
+                            {expiration_month.length !== 2 &&
+                              expiration_year.length !== 2 && (
+                                <div className="border border-red-800 rounded-md bg w-full p-1 relative -top-2 bg-red-50">
+                                  <span className="text-red-700 font-semibold text-sm">
+                                    {"Fecha Inválida"}
+                                  </span>
+                                </div>
+                              )}
                           </div>
                           <div
                             ref={parent}
@@ -215,7 +246,7 @@ export const ModalVerificationCard = ({
                             <AppFormLabel label="Código de seguridad:" />
                             <div className="flex flex-row items-center gap-2">
                               <AppTextField
-                                placeholder="3 dígitos"
+                                placeholder="CVV"
                                 value={cvv2}
                                 name="cvv2"
                                 onChange={handleChange}

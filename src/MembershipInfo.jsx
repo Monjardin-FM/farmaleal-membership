@@ -4,16 +4,16 @@ import Membership from "./assets/img/membresia.png";
 export const MembershipInfo = () => {
   return (
     <>
-      <h1 className="font-normal text-5xl text-sky-900">
+      <h1 className="font-normal text-3xl text-sky-900">
         MEMBRESÍA CLUB FARMALEAL
       </h1>
-      <div className=" flex flex-row w-screen justify-center gap-20">
+      <div className=" flex flex-row w-screen justify-center gap-x-20">
         <div className="w-1/3">
           <img src={Membership} />
         </div>
         <div className="w-1/3 text-justify gap-5 flex flex-col">
-          <h2 className="text-3xl">Beneficios:</h2>
-          <ul className="list-disc text-lg">
+          <h2 className="text-2xl">Beneficios:</h2>
+          <ul className="list-disc text-base">
             <li>Adquiere tus productos al precio más bajo del mercado</li>
             <li>Entrega nacional </li>
             <li>Garantía de entrega </li>
