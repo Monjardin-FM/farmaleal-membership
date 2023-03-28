@@ -14,14 +14,35 @@ export const MembershipInfo = () => {
         <div className="w-1/3 text-justify gap-5 flex flex-col">
           <h2 className="text-2xl">Beneficios:</h2>
           <ul className="list-disc text-base">
-            <li>Adquiere tus productos al precio más bajo del mercado</li>
-            <li>Entrega nacional </li>
-            <li>Garantía de entrega </li>
-            <li>Sin límite de compras</li>
-            <li>1 producto gratis al mes</li>
-            <li>Telemedicina</li>
-            <li>Red de descuentos</li>
-            <li>Catálogo completo</li>
+            <li>
+              Los medicamentos que quieras al precio más bajo (Te lo aseguramos)
+            </li>
+            <li>
+              1 producto gratis al mes, de nuestro catalogo de mas de xxxx
+              productos, donde cubrimos los principales padecimientos.
+              <span className="text-slate-500 text-xs">
+                {" El costo de envío de este producto es gratis en CDMX"}
+              </span>
+            </li>
+            <li>
+              Incluye videollamada con un doctor 24/7 (medicina general,
+              pediatria, ginecólogo, nutriólogo, psicólogo)
+            </li>
+            <li>
+              TDC nuestra red de descuentos a nivel nacional (más de 5000
+              descuentos en establecimientos.)
+              <span className="text-slate-500 text-xs">
+                <a href="#">{" Consultalo en nuestra página"}</a>
+              </span>
+            </li>
+            <li>
+              Entrega nacional.
+              <span className="text-slate-500 text-xs">
+                {
+                  " El costo de los envíos corre por cuenta del afiliado. CDMX sin costo."
+                }
+              </span>
+            </li>
           </ul>
           <span className="text-slate-500 text-xs">
             *El precio de los envíos corre por cuenta del afiliado. CDMX y área

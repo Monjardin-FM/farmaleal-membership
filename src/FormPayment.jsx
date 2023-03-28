@@ -151,7 +151,6 @@ export const FormPayment = ({ typeCard, cardForm, tokenID, onClose }) => {
       <div ref={parent}>
         {loadingPayment ? <Loader text="Realizando Cobro" /> : ""}
       </div>
-      {/* <Loader /> */}
       <Formik
         initialValues={{
           nombre: "",

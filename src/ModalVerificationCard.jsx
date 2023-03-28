@@ -7,7 +7,7 @@ import cardExample from "./assets/img/cvv.png";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import Swal from "sweetalert2";
 import { FooterModal } from "./FooterModal";
-import * as Yup from "yup";
+import { Card } from "./Card/Card";
 
 export const ModalVerificationCard = ({
   isVisible,
@@ -157,128 +157,133 @@ export const ModalVerificationCard = ({
                       onSubmit={props.handleSubmit}
                     >
                       <div className="pt-2">
-                        <div className=" gap-2 rounded-lg pb-2 grid grid-cols-12">
-                          <div className="col-span-12 font-medium text-lg">
-                            Datos de tarjeta
+                        <div className="grid grid-cols-12 mb-5">
+                          <div className="col-span-6 flex flex-col justify-center items-center">
+                            <Card cardNumber={cardFormat} cardForm={cardForm} />
                           </div>
-                          <div
-                            ref={parent}
-                            className="col-span-3 w-full  flex flex-col gap-2 justify-center items-start"
-                          >
-                            <AppFormLabel label="Nombre del titular:" />
+                          <div className=" gap-x-5 rounded-lg pb-2 grid grid-cols-12 col-span-6">
+                            <div className="col-span-12 font-semibold text-xl text-cyan-900 ">
+                              Datos de tarjeta
+                            </div>
+                            <div
+                              ref={parent}
+                              className="col-span-12 w-full  flex flex-col gap-2 justify-center items-start"
+                            >
+                              <AppFormLabel label="Nombre del titular:" />
 
-                            <AppTextField
-                              dataOpenCard="holder_name"
-                              name="holder_name"
-                              onChange={handleChange}
-                              placeholder="Como aparece en la tarjeta"
-                              value={holder_name}
-                              className="w-full"
-                              onBlur={props.handleBlur}
-                            />
-                            {props.touched.holder_name &&
-                              holder_name === "" && (
+                              <AppTextField
+                                dataOpenCard="holder_name"
+                                name="holder_name"
+                                onChange={handleChange}
+                                placeholder="Como aparece en la tarjeta"
+                                value={holder_name}
+                                className="w-full"
+                                onBlur={props.handleBlur}
+                              />
+                              {props.touched.holder_name &&
+                                holder_name === "" && (
+                                  <div className="border border-red-800 rounded-md bg w-full p-1 relative -top-2 bg-red-50">
+                                    <span className="text-red-700 font-semibold text-sm">
+                                      {"Campo Obligatorio"}
+                                    </span>
+                                  </div>
+                                )}
+                            </div>
+                            <div
+                              ref={parent}
+                              className="w-full col-span-12 flex flex-col gap-2 justify-center items-start text-lg font-extralight"
+                            >
+                              <AppFormLabel label="Número de Tarjeta:" />
+                              <AppTextField
+                                placeholder={"0000 0000 0000 0000"}
+                                name="card_number"
+                                value={cardFormat}
+                                onChange={(e) => {
+                                  props.handleChange(e);
+                                  handleChange(e);
+                                  handleChangeCard(e);
+                                }}
+                                className="w-full"
+                              />
+                              {!flagCardNumberValid && (
                                 <div className="border border-red-800 rounded-md bg w-full p-1 relative -top-2 bg-red-50">
                                   <span className="text-red-700 font-semibold text-sm">
-                                    {"Campo Obligatorio"}
+                                    {"Tarjeta Inválida"}
                                   </span>
                                 </div>
                               )}
-                          </div>
-                          <div
-                            ref={parent}
-                            className="w-full col-span-3 flex flex-col gap-2 justify-center items-start text-lg font-extralight"
-                          >
-                            <AppFormLabel label="Número de Tarjeta:" />
-                            <AppTextField
-                              placeholder={"0000 0000 0000 0000"}
-                              name="card_number"
-                              value={cardFormat}
-                              onChange={(e) => {
-                                props.handleChange(e);
-                                handleChange(e);
-                                handleChangeCard(e);
-                              }}
-                              className="w-full"
-                            />
-                            {!flagCardNumberValid && (
-                              <div className="border border-red-800 rounded-md bg w-full p-1 relative -top-2 bg-red-50">
-                                <span className="text-red-700 font-semibold text-sm">
-                                  {"Tarjeta Inválida"}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                          <div
-                            ref={parent}
-                            className="w-full col-span-3 flex flex-col gap-2 justify-center items-start text-lg font-extralight"
-                          >
-                            <AppFormLabel label="Fecha de expiración:" />
-                            <div className="flex flex-row gap-3 ">
-                              <AppTextField
-                                placeholder="MM"
-                                name="expiration_month"
-                                value={expiration_month}
-                                onChange={handleChange}
-                                className="w-full"
-                              />
-                              <AppTextField
-                                placeholder="YY"
-                                name="expiration_year"
-                                value={expiration_year}
-                                onChange={handleChange}
-                                className="w-full"
-                              />
                             </div>
-                            {expiration_month.length !== 2 &&
-                              expiration_year.length !== 2 && (
+                            <div
+                              ref={parent}
+                              className="w-full col-span-6 flex flex-col gap-2 justify-center items-start text-lg font-extralight"
+                            >
+                              <AppFormLabel label="Fecha de expiración:" />
+                              <div className="flex flex-row gap-3 ">
+                                <AppTextField
+                                  placeholder="MM"
+                                  name="expiration_month"
+                                  value={expiration_month}
+                                  onChange={handleChange}
+                                  className="w-full"
+                                />
+                                <AppTextField
+                                  placeholder="YY"
+                                  name="expiration_year"
+                                  value={expiration_year}
+                                  onChange={handleChange}
+                                  className="w-full"
+                                />
+                              </div>
+                              {expiration_month.length !== 2 &&
+                                expiration_year.length !== 2 && (
+                                  <div className="border border-red-800 rounded-md bg w-full p-1 relative -top-2 bg-red-50">
+                                    <span className="text-red-700 font-semibold text-sm">
+                                      {"Fecha Inválida"}
+                                    </span>
+                                  </div>
+                                )}
+                            </div>
+                            <div
+                              ref={parent}
+                              className="w-full col-span-6 flex flex-col gap-2 justify-center items-start text-lg font-extralight"
+                            >
+                              <AppFormLabel label="Código de seguridad:" />
+                              <div className="flex flex-row items-center gap-2">
+                                <AppTextField
+                                  placeholder="CVV"
+                                  value={cvv2}
+                                  name="cvv2"
+                                  onChange={handleChange}
+                                  className="w-1/2 "
+                                />
+
+                                <div className="full">
+                                  <img src={cardExample} />
+                                </div>
+                              </div>
+                              {!CVV2Flag && (
                                 <div className="border border-red-800 rounded-md bg w-full p-1 relative -top-2 bg-red-50">
                                   <span className="text-red-700 font-semibold text-sm">
-                                    {"Fecha Inválida"}
+                                    {"CVV Inválido"}
                                   </span>
                                 </div>
                               )}
-                          </div>
-                          <div
-                            ref={parent}
-                            className="w-full col-span-3 flex flex-col gap-2 justify-center items-start text-lg font-extralight"
-                          >
-                            <AppFormLabel label="Código de seguridad:" />
-                            <div className="flex flex-row items-center gap-2">
-                              <AppTextField
-                                placeholder="CVV"
-                                value={cvv2}
-                                name="cvv2"
-                                onChange={handleChange}
-                                className="w-1/2 "
-                              />
-
-                              <div className="full">
-                                <img src={cardExample} />
-                              </div>
                             </div>
-                            {!CVV2Flag && (
-                              <div className="border border-red-800 rounded-md bg w-full p-1 relative -top-2 bg-red-50">
-                                <span className="text-red-700 font-semibold text-sm">
-                                  {"CVV Inválido"}
-                                </span>
-                              </div>
-                            )}
                           </div>
                         </div>
                         <hr />
                         <FooterModal />
                         <hr />
-                        <div className="flex justify-end mt-5">
-                          <button
-                            type="submit"
-                            className="bg-sky-900 text-white px-10 py-3 hover:bg-sky-800 transition duration-200"
-                            id="pay-button"
-                            // onClick={handleSubmit}
-                          >
-                            Verificar Tarjeta
-                          </button>
-                        </div>
+                      </div>
+                      <div className="flex justify-end mt-5">
+                        <button
+                          type="submit"
+                          className="bg-sky-900 text-white px-10 py-3 hover:bg-sky-800 transition duration-200"
+                          id="pay-button"
+                          // onClick={handleSubmit}
+                        >
+                          Verificar Tarjeta
+                        </button>
                       </div>
                     </form>
                   )}
