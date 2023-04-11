@@ -26,10 +26,15 @@ export const ModalVerificationCard = ({
     deviceSessionId: "",
     tokenId: "",
   });
-
+  const [flagRotate, setFlagRotate] = useState(false);
   const { card_number, cvv2, expiration_month, expiration_year, holder_name } =
     cardForm;
-
+  const onCVVFocus = () => {
+    setFlagRotate(true);
+  };
+  const onCVVBlur = () => {
+    setFlagRotate(false);
+  };
   const handleChange = (e) => {
     setCardForm({
       ...cardForm,
@@ -105,7 +110,7 @@ export const ModalVerificationCard = ({
   };
 
   useEffect(() => {
-    if (card_number.length >= 14) {
+    if (card_number.length >= 13) {
       const flagCardNumber = OpenPay.card.validateCardNumber(card_number);
       setFlagCardNumber(flagCardNumber);
     }
@@ -159,7 +164,11 @@ export const ModalVerificationCard = ({
                       <div className="pt-2">
                         <div className="grid grid-cols-12 mb-5">
                           <div className="col-span-6 flex flex-col justify-center items-center">
-                            <Card cardNumber={cardFormat} cardForm={cardForm} />
+                            <Card
+                              cardNumber={cardFormat}
+                              cardForm={cardForm}
+                              flagRotate={flagRotate}
+                            />
                           </div>
                           <div className=" gap-x-5 rounded-lg pb-2 grid grid-cols-12 col-span-6">
                             <div className="col-span-12 font-semibold text-xl text-cyan-900 ">
@@ -255,6 +264,8 @@ export const ModalVerificationCard = ({
                                   name="cvv2"
                                   onChange={handleChange}
                                   className="w-1/2 "
+                                  onBlur={onCVVBlur}
+                                  onFocus={onCVVFocus}
                                 />
 
                                 <div className="full">

@@ -11,9 +11,11 @@ export const AppTextField = ({
   disabled = false,
   type = "text",
   onBlur,
+  onFocus,
 }) => {
   return (
     <input
+      onFocus={onFocus}
       onBlur={onBlur}
       disabled={disabled}
       min={0}
